@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casa Nova Gastos</title>
+<meta name="description" content="Registro compartido de gastos e inversión del emprendimiento Casa Nova.">
+<meta name="theme-color" content="#B5502C" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1915" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Casa Nova">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #F4EFE7;
+    --surface: #FBF8F3;
+    --surface-2: #EFE8DD;
+    --ink: #1F1A15;
+    --ink-2: #5A524A;
+    --muted: #8B837A;
+    --line: #E4DDD2;
+    --accent: #B5502C;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #F3DED3;
+    --s1: #B5502C;
+    --s2: #2B6CB0;
+    --caja: #4E8A3C;
+    --good: #1E7F3B;
+    --danger: #B42318;
+    --danger-soft: #FBE3E0;
+    --shadow: 0 1px 2px rgba(31,26,21,.06), 0 8px 24px rgba(31,26,21,.08);
+    --radius: 16px;
+    --tabbar-h: 60px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #141210;
+      --surface: #1C1915;
+      --surface-2: #26221D;
+      --ink: #F2EDE6;
+      --ink-2: #C9C1B6;
+      --muted: #8E867C;
+      --line: #332E28;
+      --accent: #D06A45;
+      --accent-ink: #1A0F0A;
+      --accent-soft: #3A2419;
+      --s1: #D06A45;
+      --s2: #4A88CC;
+      --caja: #55A045;
+      --good: #4CBF6A;
+      --danger: #F0776A;
+      --danger-soft: #3B1D19;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141210;
+    --surface: #1C1915;
+    --surface-2: #26221D;
+    --ink: #F2EDE6;
+    --ink-2: #C9C1B6;
+    --muted: #8E867C;
+    --line: #332E28;
+    --accent: #D06A45;
+    --accent-ink: #1A0F0A;
+    --accent-soft: #3A2419;
+    --s1: #D06A45;
+    --s2: #4A88CC;
+    --caja: #55A045;
+    --good: #4CBF6A;
+    --danger: #F0776A;
+    --danger-soft: #3B1D19;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+    min-height: 100vh;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+  h2 { font-size: 15px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- top bar ---------- */
+  .top {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand .logo { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; flex: none; }
+  .brand .logo svg { width: 22px; height: 22px; }
+  .brand .name { font-weight: 700; font-size: 17px; letter-spacing: -0.01em; line-height: 1.1; }
+  .brand .sub { font-size: 12px; color: var(--muted); line-height: 1.1; }
+  .sync { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .sync[data-state="ok"] .dot { background: var(--good); }
+  .sync[data-state="pending"] .dot { background: #E0A100; }
+  .sync[data-state="offline"] .dot { background: var(--muted); }
+  .sync[data-state="error"] .dot { background: var(--danger); }
+  .sync[data-state="local"] .dot { background: #E0A100; }
+
+  /* ---------- layout ---------- */
+  main { padding: 12px 16px calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 84px); max-width: 720px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .card h2 { margin-bottom: 10px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .stack { display: grid; gap: 8px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .tiny { font-size: 12px; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 12px; padding: 11px 14px; font-weight: 600; font-size: 15px; min-height: 44px;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .btn.danger { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
+  .btn.ghost { background: transparent; }
+  .btn.block { width: 100%; }
+  .btn.sm { padding: 7px 10px; font-size: 13px; min-height: 36px; border-radius: 10px; }
+  .btn[disabled] { opacity: .5; pointer-events: none; }
+  .fab {
+    position: fixed; right: 16px; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px); z-index: 25;
+    width: 58px; height: 58px; border-radius: 18px; border: none; background: var(--accent); color: var(--accent-ink);
+    box-shadow: var(--shadow); display: grid; place-items: center;
+  }
+  .fab svg { width: 26px; height: 26px; }
+
+  /* ---------- tab bar ---------- */
+  .tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-around;
+    padding: 6px 8px calc(env(safe-area-inset-bottom) + 6px);
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  }
+  .tab {
+    flex: 1; border: none; background: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 11px; font-weight: 600; padding: 4px 0; border-radius: 10px;
+  }
+  .tab svg { width: 24px; height: 24px; }
+  .tab.active { color: var(--accent); }
+
+  /* ---------- hero & tiles ---------- */
+  .hero { text-align: left; }
+  .hero .label { color: var(--ink-2); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+  .hero .value { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-top: 4px; }
+  .hero .meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+  .tile .label { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+  .tile .value { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
+  .swatch.s1 { background: var(--s1); } .swatch.s2 { background: var(--s2); } .swatch.caja { background: var(--caja); }
+
+  /* ---------- charts ---------- */
+  .splitbar { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--surface-2); margin: 12px 0 6px; gap: 2px; }
+  .splitbar .seg { height: 100%; min-width: 0; }
+  .splitbar .seg.s1 { background: var(--s1); border-radius: 4px 0 0 4px; } .splitbar .seg.s2 { background: var(--s2); border-radius: 0 4px 4px 0; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .balance { margin-top: 10px; padding: 10px 12px; background: var(--accent-soft); border-radius: 12px; font-size: 14px; }
+  .balance strong { font-weight: 700; }
+  .barlist { display: grid; gap: 10px; }
+  .barlist .item { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; }
+  .barlist .name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .barlist .val { font-size: 14px; font-weight: 600; text-align: right; }
+  .barlist .pct { font-size: 12px; color: var(--muted); text-align: right; }
+  .barlist .track { grid-column: 1 / -1; height: 10px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .barlist .fill { height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .months { display: flex; align-items: flex-end; gap: 6px; height: 150px; padding-top: 18px; border-bottom: 1px solid var(--line); }
+  .months .col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; position: relative; }
+  .months .bar { width: 100%; max-width: 44px; background: var(--accent); border-radius: 4px 4px 0 0; min-height: 2px; }
+  .months .vlabel { font-size: 10px; color: var(--ink-2); margin-bottom: 3px; white-space: nowrap; }
+  .months-x { display: flex; gap: 6px; margin-top: 6px; }
+  .months-x span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); text-transform: capitalize; }
+  .empty { text-align: center; color: var(--muted); padding: 28px 12px; font-size: 14px; }
+
+  /* ---------- movimientos list ---------- */
+  .filters { display: flex; gap: 8px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px;
+    padding: 7px 12px; font-size: 13px; font-weight: 600; min-height: 36px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .search { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; margin-bottom: 10px; min-height: 44px; }
+  .search input { flex: 1; border: none; background: none; outline: none; min-width: 0; padding: 10px 0; }
+  .search svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
+  .month-head { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 2px 6px; }
+  .month-head h3 { font-size: 14px; color: var(--ink-2); font-weight: 600; }
+  .month-head .tot { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .mov { display: grid; grid-template-columns: 38px 1fr auto; gap: 12px; align-items: center; padding: 11px 14px; border-top: 1px solid var(--line); width: 100%; background: none; border-left: none; border-right: none; border-bottom: none; text-align: left; }
+  .mov:first-child { border-top: none; }
+  .mov:active { background: var(--surface-2); }
+  .mov .ic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--surface-2); color: var(--ink-2); }
+  .mov .ic.aporte { background: color-mix(in srgb, var(--caja) 18%, transparent); color: var(--caja); }
+  .mov .t { min-width: 0; }
+  .mov .d { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mov .m { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .mov .a { font-weight: 700; font-size: 15px; white-space: nowrap; text-align: right; }
+  .mov .a.aporte { color: var(--caja); }
+  .mov .a .who { display: block; font-size: 11px; font-weight: 600; color: var(--muted); }
+  .payer-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+  .payer-dot.socio1 { background: var(--s1); } .payer-dot.socio2 { background: var(--s2); } .payer-dot.caja { background: var(--caja); }
+
+  /* ---------- forms ---------- */
+  .field { display: grid; gap: 6px; margin-bottom: 14px; }
+  .field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .input, .select, textarea.input {
+    width: 100%; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 11px 12px; min-height: 46px; outline: none;
+  }
+  .input:focus, .select:focus, textarea.input:focus { border-color: var(--accent); background: var(--surface); }
+  .select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+  textarea.input { min-height: 70px; resize: vertical; }
+  .amount { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 14px; padding: 6px 14px; }
+  .amount:focus-within { border-color: var(--accent); background: var(--surface); }
+  .amount .cur { font-size: 22px; font-weight: 700; color: var(--muted); }
+  .amount input { flex: 1; border: none; background: none; outline: none; font-size: 30px; font-weight: 700; min-width: 0; letter-spacing: -0.02em; padding: 4px 0; }
+  .seg { display: flex; gap: 6px; }
+  .seg .opt { flex: 1; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 10px 6px; font-weight: 600; font-size: 14px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink-2); }
+  .seg .opt.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .seg .opt.active .swatch { outline: 2px solid var(--bg); }
+  .seg.wrap { flex-wrap: wrap; }
+  .seg.wrap .opt { flex: 1 1 calc(50% - 6px); }
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cats .chip { min-height: 38px; }
+  .cats .chip.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .help { font-size: 12px; color: var(--muted); }
+  details.more summary { cursor: pointer; font-size: 13px; color: var(--accent); font-weight: 600; list-style: none; padding: 4px 0 12px; }
+  details.more summary::-webkit-details-marker { display: none; }
+
+  /* ---------- sheet ---------- */
+  .sheet-wrap { position: fixed; inset: 0; z-index: 40; display: none; }
+  .sheet-wrap.open { display: block; }
+  .sheet-wrap .scrim { position: absolute; inset: 0; background: rgba(20,15,10,.45); }
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; max-height: calc(100% - 24px - env(safe-area-inset-top));
+    background: var(--surface); border-radius: 22px 22px 0 0; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; animation: up .22s ease-out;
+    max-width: 720px; margin: 0 auto;
+  }
+  @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sheet .head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; }
+  .sheet .head h3 { font-size: 17px; }
+  .sheet .body { overflow-y: auto; padding: 4px 16px calc(16px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling: touch; }
+  .sheet .grip { width: 38px; height: 4px; border-radius: 2px; background: var(--line); margin: 8px auto 0; }
+  .iconbtn { width: 40px; height: 40px; border-radius: 12px; border: none; background: var(--surface-2); display: grid; place-items: center; color: var(--ink-2); }
+  .iconbtn svg { width: 20px; height: 20px; }
+
+  /* ---------- gates ---------- */
+  .gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: none; overflow-y: auto; padding: calc(env(safe-area-inset-top) + 40px) 20px 40px; }
+  .gate.open { display: block; }
+  .gate .box { max-width: 420px; margin: 0 auto; }
+  .gate .biglogo { width: 72px; height: 72px; border-radius: 20px; background: var(--accent); display: grid; place-items: center; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .gate .biglogo svg { width: 44px; height: 44px; }
+  .gate h1 { font-size: 26px; margin-bottom: 6px; }
+  .gate p { color: var(--ink-2); margin: 0 0 18px; }
+  .who-grid { display: grid; gap: 10px; }
+  .who-btn { display: flex; align-items: center; gap: 12px; text-align: left; }
+  .who-btn .av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; }
+
+  /* ---------- toast & banner ---------- */
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 86px); z-index: 60; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; max-width: calc(100% - 32px); text-align: center; }
+  .toast.show { opacity: 1; pointer-events: auto; }
+  .banner { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--accent-soft); color: var(--ink); border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-bottom: 12px; }
+  .banner.warn { background: #FBEBC8; color: #4A3600; }
+  :root[data-theme="dark"] .banner.warn { background: #3D2E0A; color: #F5D98A; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .banner.warn { background: #3D2E0A; color: #F5D98A; } }
+
+  /* ---------- settings ---------- */
+  .setrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .setrow:first-of-type { border-top: none; }
+  .setrow .l { min-width: 0; }
+  .setrow .l .t { font-weight: 600; font-size: 15px; }
+  .setrow .l .s { font-size: 12px; color: var(--muted); }
+  .catrow { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .catrow:first-child { border-top: none; }
+  .catrow .n { flex: 1; min-width: 0; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .catrow .c { font-size: 12px; color: var(--muted); }
+  .keybox { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; word-break: break-all; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  ol.steps { padding-left: 20px; margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+  ol.steps li { margin-bottom: 4px; }
+  @media (min-width: 600px) { .seg.wrap .opt { flex-basis: auto; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg>
+    </div>
+    <div>
+      <div class="name" id="brandName">Casa Nova</div>
+      <div class="sub">Gastos del emprendimiento</div>
+    </div>
+  </div>
+  <div class="sync" id="sync" data-state="offline"><span class="dot"></span><span id="syncText">Conectando…</span></div>
+</header>
+
+<main>
+  <div id="banner" class="banner hidden"></div>
+
+  <!-- ===== Movimientos ===== -->
+  <section class="view active" id="view-movs">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar descripción, proveedor o nota" autocomplete="off">
+    </div>
+    <div class="filters" id="filters">
+      <button class="chip active" data-f-tipo="">Todo</button>
+      <button class="chip" data-f-tipo="gasto">Gastos</button>
+      <button class="chip" data-f-tipo="aporte">Aportes</button>
+      <select class="chip" id="fCat" aria-label="Filtrar por categoría"><option value="">Categoría</option></select>
+      <select class="chip" id="fPag" aria-label="Filtrar por quién pagó"><option value="">Quién pagó</option></select>
+    </div>
+    <div id="movsList"></div>
+  </section>
+
+  <!-- ===== Resumen ===== -->
+  <section class="view" id="view-resumen">
+    <div class="card hero">
+      <div class="label">Total invertido en Casa Nova</div>
+      <div class="value num" id="rTotal">$ 0</div>
+      <div class="meta" id="rMeta">Sin movimientos todavía</div>
+    </div>
+
+    <div class="card">
+      <h2>Lo que ha puesto cada socio</h2>
+      <div class="tiles">
+        <div class="tile"><div class="label"><span class="swatch s1"></span><span id="rN1">Socio 1</span></div><div class="value num" id="rP1">$ 0</div><div class="sub" id="rP1s"></div></div>
+        <div class="tile"><div class="label"><span class="swatch s2"></span><span id="rN2">Socio 2</span></div><div class="value num" id="rP2">$ 0</div><div class="sub" id="rP2s"></div></div>
+      </div>
+      <div class="splitbar" id="rSplit" role="img" aria-label="Proporción aportada por cada socio"><div class="seg s1" style="width:50%"></div><div class="seg s2" style="width:50%"></div></div>
+      <div class="legend" id="rLegend"></div>
+      <div class="balance" id="rBalance">Aún no hay movimientos.</div>
+    </div>
+
+    <div class="card">
+      <h2>Caja de Casa Nova</h2>
+      <div class="tiles">
+        <div class="tile"><div class="label"><span class="swatch caja"></span>Aportes a la caja</div><div class="value num" id="rCajaIn">$ 0</div></div>
+        <div class="tile"><div class="label">Gastado desde la caja</div><div class="value num" id="rCajaOut">$ 0</div></div>
+      </div>
+      <div class="row" style="margin-top:10px"><span class="small muted">Saldo disponible en caja</span><strong class="num" id="rCajaSaldo">$ 0</strong></div>
+      <p class="help" style="margin:8px 0 0">La caja es la plata común: lo que cada socio aporta ahí cuenta como inversión suya, y lo que se paga desde la caja no se le carga a ninguno.</p>
+    </div>
+
+    <div class="card">
+      <h2>Gastos por categoría</h2>
+      <div class="barlist" id="rCats"></div>
+    </div>
+
+    <div class="card">
+      <h2>Gastos por mes</h2>
+      <div class="months" id="rMonths"></div>
+      <div class="months-x" id="rMonthsX"></div>
+    </div>
+  </section>
+
+  <!-- ===== Ajustes ===== -->
+  <section class="view" id="view-ajustes">
+    <div class="card">
+      <h2>Este celular lo usa</h2>
+      <div class="seg" id="whoSeg">
+        <button class="opt" data-who="socio1"><span class="swatch s1"></span><span id="whoN1">Socio 1</span></button>
+        <button class="opt" data-who="socio2"><span class="swatch s2"></span><span id="whoN2">Socio 2</span></button>
+      </div>
+      <p class="help" style="margin:8px 0 0">Sirve para marcar por defecto quién pagó y quién registró cada movimiento.</p>
+    </div>
+
+    <div class="card">
+      <h2>Socios</h2>
+      <div class="two">
+        <div class="field"><label for="cfgN1">Nombre socio 1</label><input class="input" id="cfgN1" maxlength="24"></div>
+        <div class="field"><label for="cfgN2">Nombre socio 2</label><input class="input" id="cfgN2" maxlength="24"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="cfgP1">Participación socio 1 (%)</label><input class="input num" id="cfgP1" type="number" inputmode="numeric" min="0" max="100"></div>
+        <div class="field"><label for="cfgP2">Participación socio 2 (%)</label><input class="input num" id="cfgP2" type="number" inputmode="numeric" min="0" max="100"></div>
+      </div>
+      <button class="btn primary block" id="saveSocios">Guardar socios</button>
+    </div>
+
+    <div class="card">
+      <h2>Categorías</h2>
+      <div id="catList"></div>
+      <div class="row" style="margin-top:10px; gap:8px">
+        <input class="input" id="newCat" placeholder="Nueva categoría" maxlength="32">
+        <button class="btn" id="addCat">Agregar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Compartir con mi socio</h2>
+      <p class="small muted" style="margin:0 0 10px">Envíale este link por WhatsApp. Con él entra directo, sin usuario ni contraseña. Solo deben tenerlo ustedes dos.</p>
+      <div class="keybox" id="shareLink"></div>
+      <div class="two" style="margin-top:10px">
+        <button class="btn" id="copyLink">Copiar link</button>
+        <button class="btn primary" id="shareBtn">Compartir</button>
+      </div>
+      <details class="more" style="margin-top:10px"><summary>Ver clave de acceso</summary>
+        <p class="help" style="margin:0 0 6px">Si instalas la app en el iPhone y te pide la clave, pega esta:</p>
+        <div class="keybox" id="keyBox"></div>
+        <button class="btn sm" id="copyKey" style="margin-top:8px">Copiar clave</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>Instalar como app</h2>
+      <div id="installAndroid" class="hidden">
+        <button class="btn primary block" id="installBtn">Instalar en este celular</button>
+      </div>
+      <div id="installIos" class="hidden">
+        <ol class="steps">
+          <li>En Safari, toca el botón <strong>Compartir</strong> (el cuadrado con la flecha).</li>
+          <li>Elige <strong>Agregar a pantalla de inicio</strong>.</li>
+          <li>Abre la app desde el ícono. Si te pide la clave, pégala desde arriba.</li>
+        </ol>
+      </div>
+      <div id="installGeneric" class="hidden">
+        <p class="small muted" style="margin:0">En el menú del navegador busca <strong>Instalar app</strong> o <strong>Agregar a pantalla de inicio</strong>.</p>
+      </div>
+      <div id="installDone" class="hidden"><p class="small muted" style="margin:0">Ya estás usando la app instalada.</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Datos</h2>
+      <div class="setrow"><div class="l"><div class="t">Exportar a Excel (CSV)</div><div class="s">Todos los movimientos, para el contador.</div></div><button class="btn sm" id="exportCsv">Exportar</button></div>
+      <div class="setrow"><div class="l"><div class="t">Tema</div><div class="s">Claro, oscuro o según el celular.</div></div>
+        <select class="select" id="themeSel" style="width:auto; min-height:38px; padding:6px 32px 6px 10px"><option value="auto">Automático</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div>
+      <div class="setrow"><div class="l"><div class="t">Salir de esta libreta</div><div class="s">Borra la clave de este celular. Los datos no se pierden.</div></div><button class="btn sm danger" id="logout">Salir</button></div>
+      <p class="help" style="margin:10px 0 0" id="verInfo"></p>
+    </div>
+  </section>
+</main>
+
+<button class="fab" id="fab" aria-label="Registrar gasto">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<nav class="tabs">
+  <button class="tab active" data-view="movs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Movimientos</button>
+  <button class="tab" data-view="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Resumen</button>
+  <button class="tab" data-view="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
+</nav>
+
+<!-- ===== Formulario (sheet) ===== -->
+<div class="sheet-wrap" id="sheetWrap" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="scrim" id="scrim"></div>
+  <div class="sheet">
+    <div class="grip"></div>
+    <div class="head">
+      <h3 id="sheetTitle">Nuevo gasto</h3>
+      <button class="iconbtn" id="closeSheet" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <form class="body" id="form" novalidate>
+      <input type="hidden" id="fId">
+      <div class="field">
+        <div class="seg" id="tipoSeg">
+          <button type="button" class="opt active" data-tipo="gasto">Gasto</button>
+          <button type="button" class="opt" data-tipo="aporte">Aporte a la caja</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fMonto">Monto</label>
+        <div class="amount"><span class="cur">$</span><input id="fMonto" inputmode="numeric" autocomplete="off" placeholder="0" aria-label="Monto en pesos"></div>
+      </div>
+      <div class="field">
+        <label for="fDesc" id="fDescLabel">¿En qué se gastó?</label>
+        <input class="input" id="fDesc" placeholder="Ej: Pintura para el local" maxlength="80" autocomplete="off">
+      </div>
+      <div class="field" id="catField">
+        <label>Categoría</label>
+        <div class="cats" id="fCats"></div>
+      </div>
+      <div class="field">
+        <label id="pagoLabel">¿Quién pagó?</label>
+        <div class="seg" id="pagoSeg">
+          <button type="button" class="opt" data-pago="socio1"><span class="swatch s1"></span><span id="pagoN1">Socio 1</span></button>
+          <button type="button" class="opt" data-pago="socio2"><span class="swatch s2"></span><span id="pagoN2">Socio 2</span></button>
+          <button type="button" class="opt" data-pago="caja" id="pagoCaja"><span class="swatch caja"></span>Caja</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fFecha">Fecha</label>
+        <input class="input" id="fFecha" type="date">
+      </div>
+      <details class="more" id="moreDetails">
+        <summary>Más detalles (proveedor, método de pago, nota)</summary>
+        <div class="field">
+          <label for="fProv">Proveedor o a quién se le pagó</label>
+          <input class="input" id="fProv" placeholder="Ej: Ferretería El Constructor" maxlength="60" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Método de pago</label>
+          <div class="seg" id="metSeg">
+            <button type="button" class="opt" data-met="efectivo">Efectivo</button>
+            <button type="button" class="opt" data-met="transferencia">Transferencia</button>
+            <button type="button" class="opt" data-met="tarjeta">Tarjeta</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fNota">Nota</label>
+          <textarea class="input" id="fNota" maxlength="300" placeholder="Opcional"></textarea>
+        </div>
+      </details>
+      <p class="help" id="fErr" style="color:var(--danger); min-height:18px; margin:0 0 8px"></p>
+      <button type="submit" class="btn primary block" id="saveBtn">Guardar</button>
+      <button type="button" class="btn danger block hidden" id="deleteBtn" style="margin-top:10px">Eliminar movimiento</button>
+      <p class="help" id="fMeta" style="margin-top:10px"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Gate: clave ===== -->
+<div class="gate" id="gateKey">
+  <div class="box">
+    <div class="biglogo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></div>
+    <h1>Casa Nova Gastos</h1>
+    <p>Pega la clave de acceso que te compartieron para entrar a la libreta de gastos.</p>
+    <div class="field">
+      <label for="keyInput">Clave de acceso</label>
+      <input class="input" id="keyInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="casanova-xxxxxxxx…">
+    </div>
+    <div class="two">
+      <button class="btn" id="pasteKey">Pegar</button>
+      <button class="btn primary" id="enterKey">Entrar</button>
+    </div>
+    <p class="help" id="keyErr" style="color:var(--danger); min-height:18px; margin-top:8px"></p>
+    <details class="more" style="margin-top:18px"><summary>¿Primera vez? Crear una libreta nueva</summary>
+      <p class="help">Se genera una clave nueva y una libreta vacía. Después compártela con tu socio desde Ajustes.</p>
+      <button class="btn block" id="newLedger">Crear libreta nueva</button>
+    </details>
+  </div>
+</div>
+
+<!-- ===== Gate: quién eres ===== -->
+<div class="gate" id="gateWho">
+  <div class="box">
+    <div class="biglogo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></div>
+    <h1>¿Quién usa este celular?</h1>
+    <p>Así cada movimiento queda marcado con quién lo registró. Se puede cambiar en Ajustes.</p>
+    <div class="who-grid">
+      <button class="btn who-btn" data-who="socio1"><span class="av" style="background:var(--s1)" id="whoAv1">S</span><span id="whoBtn1">Socio 1</span></button>
+      <button class="btn who-btn" data-who="socio2"><span class="av" style="background:var(--s2)" id="whoAv2">S</span><span id="whoBtn2">Socio 2</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

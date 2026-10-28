@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Cada libreta vive bajo /libretas/{clave}. La clave es larga y aleatoria:
+    // solo quien tiene el link (con la clave) puede leer o escribir en ella.
+    match /libretas/{clave}/movimientos/{id} {
+      allow read: if claveValida(clave);
+      allow create, update: if claveValida(clave) && movimientoValido(request.resource.data);
+      allow delete: if claveValida(clave);
+    }
+    match /libretas/{clave}/config/{doc} {
+      allow read, write: if claveValida(clave) && doc == 'general';
+    }
+    function claveValida(clave) {
+      return clave.size() >= 20 && clave.size() <= 80 && clave.matches('^[A-Za-z0-9-]+$');
+    }
+    function movimientoValido(d) {
+      return d.monto is number && d.monto > 0 && d.monto < 100000000000
+        && d.tipo in ['gasto', 'aporte']
+        && d.pagadoPor in ['socio1', 'socio2', 'caja']
+        && d.fecha is string && d.fecha.size() == 10
+        && d.descripcion is string && d.descripcion.size() <= 120;
+    }
+  }
+}
